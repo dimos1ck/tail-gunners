@@ -1,0 +1,25 @@
+name: Discord Notifications
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  discord:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Discord notification
+        uses: appleboy/discord-action@master
+        with:
+          webhook_id: ${{ secrets.DISCORD_WEBHOOK_ID }}
+          webhook_token: ${{ secrets.DISCORD_WEBHOOK_TOKEN }}
+          message: |
+            🔔 **${{ github.event_name == 'push' && 'Push' || 'Pull Request' }}** в репозиторий
+            
+            📦 Репозиторий: ${{ github.repository }}
+            👤 Автор: ${{ github.actor }}
+            🌿 Ветка: ${{ github.ref_name }}
+            📝 Сообщение: ${{ github.event.head_commit.message || github.event.pull_request.title }}
+            🔗 Ссылка: ${{ github.event.compare || github.event.pull_request.html_url }}
